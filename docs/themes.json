@@ -1,0 +1,22 @@
+{
+  "blue": {
+    "dark": "#1a2073",
+    "light": "#2c53bf"
+  },
+  "green": {
+    "dark": "#0b7a1a",
+    "light": "#3abd4c"
+  },
+  "purple": {
+    "dark": "#531880",
+    "light": "#9b64c4"
+  },
+  "red": {
+    "dark": "#800000",
+    "light": "#b03a3a"
+  },
+  "yellow": {
+    "dark": "#878c1d",
+    "light": "#c0c45a"
+  }
+}

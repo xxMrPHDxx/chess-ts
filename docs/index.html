@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Chess</title>
+    <style>
+      *, *::before, *::after { 
+        padding: 0;
+        box-sizing: border-box;
+        text-align: center;
+      }
+      .text-lg { font-size: 1.6rem; }
+      .p-1 { padding: 16px; }
+      #Panel {
+        width: fit-content;
+        margin: 0 auto;
+        display: grid;
+        grid-template-rows: 1fr;
+        grid-template-columns: 64px 1fr 64px;
+      }
+      .chess-board {
+        margin: 1rem;
+        display: inline-block; 
+        padding: 0.6rem;
+        border: 2px solid black;
+        border-radius: 12px;
+      }
+      .hint { 
+        pointer-events: none;
+        position: absolute; 
+        border: 2px solid black; 
+        background-color: rgba(0, 255, 0, 0.3);
+      }
+      .hint.moving-piece { background-color: unset; }
+      .hint.attack { background-color: rgba(255, 0, 0, 0.3); }
+      .hint.check { 
+        background: repeating-radial-gradient(rgba(0,0,0,0.1), rgba(255,0,0,0.4) 30%); 
+        border-color: red;
+        border-style: dashed;
+      }
+      .hint.checkmate { 
+        background-color: rgba(255,0,0,0.4); 
+        border-color: red;
+        border-style: double;
+      }
+      .hint.stalemate { 
+        background-color: rgba(0,0,0,0.6); 
+        border-color: white;
+        border-style: double;
+      }
+      .captures {
+        border: 1px solid black;
+        max-height: calc(8 * 48px + 32px);
+        overflow-y: scroll;
+      }
+      .captures > span { display: inline; font: 28px Arial; }
+    </style>
+    <script defer src="./main.js"></script>
+  </head>
+  <body>
+    <div class="p-1 text-lg">
+      <span>Select color theme: </span>
+      <select id="Theme" class="text-lg"></select>
+    </div>
+    <div id="Panel">
+      <div id="captures-black" class="captures black p-1"></div>
+      <div class="chess-board">
+        <canvas id="board"></canvas>
+      </div>
+      <div id="captures-white" class="captures white p-1"></div>
+    </div>
+  </body>
+</html>
