@@ -5,7 +5,7 @@ export type ThemeSpec = {
   light: string,
 };
 
-type ThemesSpec = {
+export type ThemesSpec = {
   [key: string]: ThemeSpec,
 };
 

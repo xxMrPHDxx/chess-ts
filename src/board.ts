@@ -1,6 +1,6 @@
 import { Moves, Pieces } from "./containers";
 import Move, { EnPassantCapture } from "./move";
-import Piece, { Alliance, Bishop, getSymbol, King, Knight, Pawn, Queen, Rook } from "./piece";
+import Piece, { Alliance, Bishop, getSymbol, King, Knight, Pawn, Queen, Rook, Type } from "./piece";
 import Player, { NoKingFound } from "./player";
 
 export class Tile {
@@ -131,11 +131,17 @@ export default class Board {
       return builder;
     }, new Builder()).build();
   }
-  static isValidPosition(pos: number) : boolean {
-    return pos >= 0 && pos < 64;
+  static gameEnded(board: Board){
+    for(const player of [board.white, board.black]){
+      if(player.checkmate || player.stalemate) return true;
+    }
+    return false;
   }
   static getOpponent(ally: Alliance) : Alliance {
     return ally === Alliance.W ? Alliance.B : Alliance.W;
+  }
+  static isValidPosition(pos: number) : boolean {
+    return pos >= 0 && pos < 64;
   }
 }
 
@@ -160,5 +166,46 @@ export class Builder {
   }
   build() : Board {
     return new Board(this);
+  }
+  static fromBit(bits: string){
+    const builder = new Builder(bits[0] === '1' ? Alliance.W : Alliance.B);
+    for(let i=0; i<64; i++){
+      const j = i*4 + 1;
+      const tile = parseInt(bits.substring(j, j+4), 2);
+      const ally = (tile >> 3) === 1 ? Alliance.W : Alliance.B;
+      switch(tile & 0b111){
+        case 0b001: builder.setPiece(new Rook(i, ally)); break;
+        case 0b010: builder.setPiece(new Knight(i, ally)); break;
+        case 0b011: builder.setPiece(new Bishop(i, ally)); break;
+        case 0b100: builder.setPiece(new Queen(i, ally)); break;
+        case 0b101: builder.setPiece(new King(i, ally)); break;
+        case 0b110: builder.setPiece(new Pawn(i, ally)); break;
+      }
+    }
+    return builder.build();
+  }
+}
+
+export class BoardSerializer {
+  static bit(board: Board){
+    let bits = board.player.ally === Alliance.W ? '1' : '0', max=-Infinity;
+    for(let i=0; i<64; i++){
+      const tile = board.getTile(i);
+      let state = 0;
+      if(tile.piece){
+        if(tile.piece.ally === Alliance.W) state = 0b1000;
+        switch(tile.piece.type){
+          case Type.R: state += 0b001; break;
+          case Type.N: state += 0b010; break;
+          case Type.B: state += 0b011; break;
+          case Type.Q: state += 0b100; break;
+          case Type.K: state += 0b101; break;
+          case Type.P: state += 0b110; break;
+        }
+      }
+      if(state > max) max = state;
+      bits += state.toString(2).padStart(4, '0');
+    }
+    return bits;
   }
 }
